@@ -1,9 +1,17 @@
 services:
-  postgres:
-    image: 'postgres:latest'
+  db:
+    image: postgres:latest
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=DEV'
+      - 'POSTGRES_PASSWORD=0000'
+      - 'POSTGRES_USER=nuno'
     ports:
-      - '5432'
+      - "5433:5432"
+    restart: always
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: always  # Ensures app container restarts if it fails
