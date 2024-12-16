@@ -5,6 +5,8 @@ import com.tibss.StockPriceData.Models.Stock;
 import com.tibss.StockPriceData.Service.PortfolioService;
 import com.tibss.StockPriceData.Service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -53,7 +55,12 @@ public class PortfolioController {
 
     // Fetch portfolio by username
     @GetMapping("/getPortfolio")
-    public Portfolio getPortfolioByUser(@RequestParam String username) {
-        return portfolioService.getPortfolioByUser(username);
+    public ResponseEntity<Portfolio> getPortfolioByUsername(@RequestParam String username) {
+        Optional<Portfolio> portfolioOpt = portfolioService.getPortfolioByUsername(username);
+
+        // Return the portfolio if found
+        // Return 404 if not found
+        return portfolioOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
+
 }

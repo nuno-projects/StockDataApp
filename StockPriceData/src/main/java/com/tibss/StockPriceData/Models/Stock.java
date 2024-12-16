@@ -12,15 +12,18 @@ public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-    private String Symbol;
-    private Double Price;
-    private Double DividendYield;
-    private Double DcfFairValue;
-    private Double MarketCap;
-    private Double TotalDebt;
-    private Double TotalCashEquivalents;
-    private Long NumShares;
+    private Long id;  // Note the lowercase 'id' (it’s more Java convention)
+    @Column(unique = true, nullable = false)
+    private String symbol;  // Lowercase 'symbol' to match the query method
+    private Double price;
+    private Double dividendYield;
+    @Column(name = "dcf_fair_value")
+    private Double dcfFairValue;
+    private Double marketCap;
+    private Double totalDebt;
+    @Column(name = "total_cash_equivalents")
+    private Double totalCashEquivalents;
+    private Long numShares;
 
 //    public Stock( String symbol, Double price, Double dividendYield, Double dcfFairValue,
 //                 Double marketCap, Double totalDebt, Double totalCashEquivalents, Long numShares) {

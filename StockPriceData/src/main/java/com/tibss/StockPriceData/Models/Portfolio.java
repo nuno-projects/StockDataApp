@@ -15,16 +15,15 @@ public class Portfolio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-
-    private String Name;
-
-    // Corrected One-to-Many relationship mapping
-    @OneToMany(mappedBy = "Portfolio", cascade = CascadeType.ALL)  // "portfolio" refers to the field in Operation
-    private List<Operation> OperationList = new ArrayList<>();  // List of operations for this portfolio
-
-    private Double TotalValue;
-    private Double DividendYield;
+    private Long id;
+    private String name;
+    @ManyToOne()
+    @JoinColumn(name = "user_Id")
+    private AppUser user;
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
+    private List<Operation> operationList = new ArrayList<>();  // List of operations for this portfolio
+    private Double totalValue;
+    private Double dividendYield;
 
     // Additional methods as needed
 }

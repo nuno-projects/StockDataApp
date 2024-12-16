@@ -3,7 +3,9 @@ package com.tibss.StockPriceData.Service;
 import com.tibss.StockPriceData.Models.Stock;
 import com.tibss.StockPriceData.Repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class StockService {
 
     private final StockRepository stockRepository;

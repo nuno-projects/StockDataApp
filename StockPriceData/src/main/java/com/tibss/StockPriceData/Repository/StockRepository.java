@@ -6,9 +6,12 @@ import java.util.Optional;
 
 
 public interface StockRepository extends JpaRepository<Stock, Long> {
+    // Method to find a stock by its symbol
     Optional<Stock> findBySymbol(String symbol);
 
-//TODO
-//List<Stock> findByPriceBetween(Double minPrice, Double maxPrice); for a range-based search.
-//    List<Stock> findByMarketCapGreaterThan(Double minMarketCap); for searching stocks by market cap.
+//    // Method to find stocks whose price is between a specific range
+//    List<Stock> findByPriceBetween(Double minPrice, Double maxPrice);
+//
+//    // Method to find stocks with a market cap greater than a specified value
+//    List<Stock> findByMarketCapGreaterThan(Double minMarketCap);
 }
