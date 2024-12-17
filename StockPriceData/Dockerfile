@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y maven
 RUN mvn clean install -DskipTests
 
 # Expose port 8080 (default Spring Boot port)
-EXPOSE 8080
+EXPOSE 8081
 
 # Command to run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "target/StockPriceData-0.0.1-SNAPSHOT.jar"]

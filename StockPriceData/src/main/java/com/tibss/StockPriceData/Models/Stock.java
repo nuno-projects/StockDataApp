@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @Setter
 @Getter
@@ -12,9 +14,9 @@ public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Note the lowercase 'id' (it’s more Java convention)
+    private Long id;
     @Column(unique = true, nullable = false)
-    private String symbol;  // Lowercase 'symbol' to match the query method
+    private String symbol;
     private Double price;
     private Double dividendYield;
     @Column(name = "dcf_fair_value")
@@ -24,16 +26,10 @@ public class Stock {
     @Column(name = "total_cash_equivalents")
     private Double totalCashEquivalents;
     private Long numShares;
+    @Column(columnDefinition = "TEXT")
+    private String description;
+    private String sectorName;
+    private String websiteURL;
+    private LocalDateTime updateDate = LocalDateTime.now(); // Automatically set current time
 
-//    public Stock( String symbol, Double price, Double dividendYield, Double dcfFairValue,
-//                 Double marketCap, Double totalDebt, Double totalCashEquivalents, Long numShares) {
-//        Symbol = symbol;
-//        Price = price;
-//        DividendYield = dividendYield;
-//        DcfFairValue = dcfFairValue;
-//        MarketCap = marketCap;
-//        TotalDebt = totalDebt;
-//        TotalCashEquivalents = totalCashEquivalents;
-//        NumShares = numShares;
-//    }
 }

@@ -10,6 +10,9 @@ import com.tibss.StockPriceData.Repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class OperationService {
 
@@ -20,8 +23,15 @@ public class OperationService {
     @Autowired
     private PortfolioRepository portfolioRepository;
 
+    public Optional<Operation> getOperationById(Long operationId) {
+        return operationRepository.findById(operationId);
+    }
 
-    public void addOperation(Double amount, Double price, OperationType operationType, Long stockId, Long portfolioId) {
+    public List<Operation> getOperations() {return operationRepository.findAll();}
+
+
+
+    public Operation addOperation(Double amount, Double price, OperationType operationType, Long stockId, Long portfolioId) {
         // Retrieve the stock by its ID
         Stock stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new RuntimeException("Stock not found with ID: " + stockId));
@@ -38,6 +48,7 @@ public class OperationService {
         operation.setPortfolio(portfolio);
 
         operationRepository.save(operation);  // Persist the operation
+        return operation;
     }
 
     // Add method for buy operations
