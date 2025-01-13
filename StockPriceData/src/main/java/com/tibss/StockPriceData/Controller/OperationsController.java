@@ -62,4 +62,26 @@ public class OperationsController {
                 operation.getPrice(), operation.getOperationType(),
                 operation.getStock().getId(), operation.getPortfolio().getId());
     }
+
+    // Update operation
+    @PutMapping("/updateOperation")
+    public ResponseEntity<Operation> updateOperation(@RequestParam Long id, @RequestBody Operation updatedOperation) {
+        Operation operation = operationService.updateOperation(id, updatedOperation);
+        return ResponseEntity.ok(operation);
+    }
+
+
+    // Delete operation by ID
+    @DeleteMapping("/deleteOperationById")
+    public ResponseEntity<Void> deleteOperationById(@RequestParam Long id) {
+        operationService.deleteOperationById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Delete all operations
+    @DeleteMapping("/deleteAllOperations")
+    public ResponseEntity<Void> deleteAllOperations() {
+        operationService.deleteAllOperations();
+        return ResponseEntity.noContent().build();
+    }
 }

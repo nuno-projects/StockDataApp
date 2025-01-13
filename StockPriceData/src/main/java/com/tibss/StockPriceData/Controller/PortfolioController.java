@@ -114,4 +114,26 @@ public class PortfolioController {
     public Portfolio addPortfolio(@RequestBody Portfolio portfolio) {
         return portfolioService.addPortfolio(portfolio);
     }
+
+
+    // Update portfolio
+    @PutMapping("/updatePortfolio")
+    public ResponseEntity<Portfolio> updatePortfolio(@RequestParam Long id, @RequestBody Portfolio updatedPortfolio) {
+        Portfolio portfolio = portfolioService.updatePortfolio(id, updatedPortfolio);
+        return ResponseEntity.ok(portfolio);
+    }
+
+    // Delete portfolio by ID
+    @DeleteMapping("/deletePortfolioById")
+    public ResponseEntity<Void> deletePortfolioById(@RequestParam Long id) {
+        portfolioService.deletePortfolioById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Delete all portfolios
+    @DeleteMapping("/deleteAllPortfolios")
+    public ResponseEntity<Void> deleteAllPortfolios() {
+        portfolioService.deleteAllPortfolios();
+        return ResponseEntity.noContent().build();
+    }
 }

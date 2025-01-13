@@ -55,30 +55,69 @@ public class StockController {
 
     @GetMapping("/loadStocksInfo")
     public String loadStocksInfo(@RequestParam(value = "ticker", required = false) String ticker) {
-        // If a specific ticker is provided
+        // If specific tickers are provided (single or comma-separated)
         if (ticker != null && !ticker.isEmpty()) {
-            Stock stock = apiService.loadStockStatistics(ticker);
-
-            if (stock != null) {
-                return "Stock updated: " + stock.getSymbol();
-            } else {
-                return "Stock not found for ticker: " + ticker;
-            }
+            apiService.loadStockStatistics(ticker);  // Pass the tickers directly, even if they don't exist in the database
+            return "Stock statistics loaded for: " + ticker;
         }
 
-        // If no ticker is provided, fetch all existing stocks and update them
+        // If no specific ticker is provided, load all stocks from the database
         List<String> stockSymbols = stockService.getStocks().stream()
                 .map(Stock::getSymbol)
                 .toList();
 
+        String tickerString = String.join(",", stockSymbols);
+
+        // If no stocks are found in the database, load all statistics anyway
         if (stockSymbols.isEmpty()) {
-            return "No stocks were found.";
+            apiService.loadStockStatistics("");  // Call API with empty or default string to load statistics
+            return "No stocks found in the database, but statistics loaded for provided tickers.";
         }
 
-        String tickerString = String.join(",", stockSymbols);
-        apiService.loadStockStatistics(tickerString);  // Refresh all stocks' info
-
+        apiService.loadStockStatistics(tickerString);  // Load statistics for all stocks in the database
         return "Updated stocks: " + tickerString;
     }
 
+    // Calculate DCF value for a stock
+    @GetMapping("/calculateDCFValue")
+    public ResponseEntity<Double> calculateDCFValue(@RequestParam String ticker) {
+        Stock stock = stockService.getStockBySymbol(ticker);
+        if (stock == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        double dcfValue = stockService.calculateDCFValue(stock);
+        return ResponseEntity.ok(dcfValue);
+    }
+
+    // Calculate safe DCF value for a stock
+    @GetMapping("/calculateSafeDCFValue")
+    public ResponseEntity<Double> calculateSafeDCFValue(@RequestParam String ticker, @RequestParam Float safetyPercentage) {
+        Stock stock = stockService.getStockBySymbol(ticker);
+        if (stock == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        double safeDCFValue = stockService.calculateDCFSafetyValue(stock, safetyPercentage);
+        return ResponseEntity.ok(safeDCFValue);
+    }
+
+    // Update stock
+    @PutMapping("/updateStock")
+    public ResponseEntity<Stock> updateStock(@RequestParam Long id, @RequestBody Stock updatedStock) {
+        Stock stock = stockService.updateStock(id, updatedStock);
+        return ResponseEntity.ok(stock);
+    }
+
+    // Delete stock by ID
+    @DeleteMapping("/deleteStockById")
+    public ResponseEntity<Void> deleteStockById(@RequestParam Long id) {
+        stockService.deleteStockById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Delete all stocks
+    @DeleteMapping("/deleteAllStocks")
+    public ResponseEntity<Void> deleteAllStocks() {
+        stockService.deleteAllStocks();
+        return ResponseEntity.noContent().build();
+    }
 }

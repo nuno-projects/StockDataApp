@@ -32,9 +32,9 @@ public class APIService {
         this.stockRepository = stockRepository;
     }
 
-    public Stock loadStockStatistics(String ticker) {
+    public List<Stock> loadStockStatistics(String ticker) {
         String url = BASE_URL_SeekingAlpha + "symbols/get-profile?symbols=" + ticker;
-
+        List<Stock> stocksUpdated = new ArrayList<>();
         // Set the headers for the request
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-rapidapi-key", API_KEY);
@@ -48,8 +48,6 @@ public class APIService {
             JsonNode body = response.getBody();
 
             if(body != null) {
-                Stock tempStock = new Stock();
-
                 for (JsonNode stock : body.path("data")) {
 
                     String symbol = stock.path("id").toString().replace("\"", "");
@@ -69,36 +67,38 @@ public class APIService {
 
                     Stock stockEntity = stockRepository.findBySymbol(symbol).orElse(new Stock());
                     // Check if the stock needs to be updated
-                    if (!stockEntity.getSymbol().isEmpty()) {
-                        if(stockEntity.getUpdateDate() == null ) stockEntity.setUpdateDate(LocalDateTime.now());
-
-                        LocalDateTime lastUpdated = stockEntity.getUpdateDate();
-                        LocalDateTime now = LocalDateTime.now();
-
-                        // Update if the stock hasn't been updated in the last 24 hours
-                        long hoursSinceUpdate = ChronoUnit.HOURS.between(lastUpdated, now);
-                        if (hoursSinceUpdate < 24) {
-                            stockRepository.save(stockEntity);
-                            continue;
-                        }
-                    }
+//                    if (stockEntity.getSymbol() != null && !stockEntity.getSymbol().isEmpty()) {
+//                        if(stockEntity.getUpdateDate() == null ) stockEntity.setUpdateDate(LocalDateTime.now());
+//
+//                        LocalDateTime lastUpdated = stockEntity.getUpdateDate();
+//                        LocalDateTime now = LocalDateTime.now();
+//
+//                        // Update if the stock hasn't been updated in the last 24 hours
+//                        long hoursSinceUpdate = ChronoUnit.HOURS.between(lastUpdated, now);
+//                        if (hoursSinceUpdate < 24) {
+//                            stockRepository.save(stockEntity);
+//                            stocksUpdated.add(stockEntity);
+//                            continue;
+//                        }
+//                    }
 
                     stockEntity.setSymbol(symbol);
                     stockEntity.setSectorName(sectorName);
                     stockEntity.setDescription(longDescr);
                     stockEntity.setWebsiteURL(webPage);
                     stockEntity.setPrice(lastPrice);
+                    stockEntity.setNumShares((long) (lastPrice / marketCap));
                     stockEntity.setDividendYield(dividendYield);
                     stockEntity.setMarketCap((double) marketCap);
                     stockEntity.setTotalDebt(totalDebt);
                     stockEntity.setTotalCashEquivalents(totalCash);
 
                     stockRepository.save(stockEntity);
-                    tempStock = stockEntity;
+                    stocksUpdated.add((stockEntity));
                     System.out.println("New stock saved: " + stockEntity.getSymbol());
                 }
 
-                return tempStock;
+                return stocksUpdated;
             }
         } catch (Exception e) {
             System.err.println("Error fetching data: " + e.getMessage());

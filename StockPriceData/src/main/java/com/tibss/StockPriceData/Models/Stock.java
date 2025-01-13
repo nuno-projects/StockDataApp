@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Setter
@@ -21,6 +22,8 @@ public class Stock {
     private Double dividendYield;
     @Column(name = "dcf_fair_value")
     private Double dcfFairValue;
+    private Double safeDCFFairValue;
+    private List<Long> fcfList;
     private Double marketCap;
     private Double totalDebt;
     @Column(name = "total_cash_equivalents")

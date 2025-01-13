@@ -24,4 +24,30 @@ public class UserService {
         System.out.println("User Added: " + user.getUsername());
         return userRepository.save(user);
     }
+
+    // Service method to update user
+    public AppUser updateUser(Long id, AppUser updatedUser) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setUsername(updatedUser.getUsername());
+                    user.setPortfolios(updatedUser.getPortfolios());
+                    user.setTotalInvested(updatedUser.getTotalInvested());
+                    // Update other fields as necessary
+                    return userRepository.save(user);
+                })
+                .orElseGet(() -> {
+                    updatedUser.setId(id);
+                    return userRepository.save(updatedUser);
+                });
+    }
+
+    // Service method to delete user by id
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    // Service method to delete all users
+    public void deleteAllUsers() {
+        userRepository.deleteAll();
+    }
 }

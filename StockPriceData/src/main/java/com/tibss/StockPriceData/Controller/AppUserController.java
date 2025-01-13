@@ -60,4 +60,26 @@ public class AppUserController {
     public AppUser addUser(@RequestBody AppUser user) {
         return userService.addUser(user);
     }
+
+    // Update user
+    @PutMapping("/updateUser")
+    public ResponseEntity<AppUser> updateUser(@RequestParam Long id, @RequestBody AppUser updatedUser) {
+        AppUser user = userService.updateUser(id, updatedUser);
+        return ResponseEntity.ok(user);
+    }
+
+    // Delete user by ID
+    @DeleteMapping("/deleteUserById")
+    public ResponseEntity<Void> deleteUserById(@RequestParam Long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Delete all users
+    @DeleteMapping("/deleteAllUsers")
+    public ResponseEntity<Void> deleteAllUsers() {
+        userService.deleteAllUsers();
+        return ResponseEntity.noContent().build();
+    }
+
 }

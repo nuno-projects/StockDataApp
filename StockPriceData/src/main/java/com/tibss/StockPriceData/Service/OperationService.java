@@ -60,4 +60,33 @@ public class OperationService {
     public void addSellOperation(Double amount, Double price, Long stockId, Long portfolioId) {
         addOperation(amount, price, OperationType.SELL,  stockId, portfolioId);
     }
+
+
+    // Service method to update operation
+    public Operation updateOperation(Long id, Operation updatedOperation) {
+        return operationRepository.findById(id)
+                .map(operation -> {
+                    operation.setPortfolio(updatedOperation.getPortfolio());
+                    operation.setPrice(updatedOperation.getPrice());
+                    operation.setAmount(updatedOperation.getAmount());
+                    operation.setTotalCost(updatedOperation.getTotalCost());
+                    operation.setOperationType(updatedOperation.getOperationType());
+                    // Update other fields as necessary
+                    return operationRepository.save(operation);
+                })
+                .orElseGet(() -> {
+                    updatedOperation.setId(id);
+                    return operationRepository.save(updatedOperation);
+                });
+    }
+
+    // Service method to delete operation by id
+    public void deleteOperationById(Long id) {
+        operationRepository.deleteById(id);
+    }
+
+    // Service method to delete all operations
+    public void deleteAllOperations() {
+        operationRepository.deleteAll();
+    }
 }

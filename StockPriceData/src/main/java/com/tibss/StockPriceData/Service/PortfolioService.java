@@ -76,4 +76,33 @@ public class PortfolioService {
         System.out.println("Portfolio Added: " + portfolio.getName());
         return portfolioRepository.save(portfolio);
     }
+
+    // Service method to update portfolio
+    public Portfolio updatePortfolio(Long id, Portfolio updatedPortfolio) {
+        return portfolioRepository.findById(id)
+                .map(portfolio -> {
+                    portfolio.setName(updatedPortfolio.getName());
+                    portfolio.setUser(updatedPortfolio.getUser());
+                    portfolio.setOperationList(updatedPortfolio.getOperationList());
+                    portfolio.setDividendYield(updatedPortfolio.getDividendYield());
+                    portfolio.setTotalValue(updatedPortfolio.getTotalValue());
+                    // Update other fields as necessary
+                    return portfolioRepository.save(portfolio);
+                })
+                .orElseGet(() -> {
+                    updatedPortfolio.setId(id);
+                    return portfolioRepository.save(updatedPortfolio);
+                });
+    }
+
+
+    // Service method to delete portfolio by id
+    public void deletePortfolioById(Long id) {
+        portfolioRepository.deleteById(id);
+    }
+
+    // Service method to delete all portfolios
+    public void deleteAllPortfolios() {
+        portfolioRepository.deleteAll();
+    }
 }
